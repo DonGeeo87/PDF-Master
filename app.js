@@ -443,83 +443,94 @@ async function handleDownload() {
 
     const { PDFDocument, rgb, StandardFonts } = PDFLib;
 
-    // Load original PDF
-    const arrayBuffer = await state.file.arrayBuffer();
-    const pdfDoc = await PDFDocument.load(arrayBuffer);
-    const pages = pdfDoc.getPages();
-    const font = await pdfDoc.embedFont(StandardFonts.Helvetica);
+    try {
+        // Load original PDF
+        const arrayBuffer = await state.file.arrayBuffer();
+        const pdfDoc = await PDFDocument.load(arrayBuffer);
+        const pages = pdfDoc.getPages();
+        
+        // Embed fonts for different text types
+        const helveticaFont = await pdfDoc.embedFont(StandardFonts.Helvetica);
+        const signatureFont = await pdfDoc.embedFont(StandardFonts.TimesRomanItalic);
 
-    // Gather inputs from DOM
-    const inputElements = document.querySelectorAll('.input-content');
+        // Gather inputs from DOM
+        const inputElements = document.querySelectorAll('.input-content');
 
-    inputElements.forEach(el => {
-        const text = el.innerText;
-        if (!text.trim()) return;
+        inputElements.forEach(el => {
+            const text = el.innerText;
+            if (!text.trim()) return;
 
-        const wrapper = el.parentElement; // The .input-wrapper
-        const layer = wrapper.parentElement; // The .text-layer
-        const pageIndex = parseInt(layer.dataset.pageIndex);
-        const page = pages[pageIndex];
+            const wrapper = el.parentElement; // The .input-wrapper
+            const layer = wrapper.parentElement; // The .text-layer
+            const pageIndex = parseInt(layer.dataset.pageIndex);
+            const page = pages[pageIndex];
 
-        const { width, height } = page.getSize(); // PDF points
+            const { width, height } = page.getSize(); // PDF points
 
-        // Get visual position percentages to be scale-independent
-        const layerRect = layer.getBoundingClientRect(); // Visual pixel size
+            // Get visual position percentages to be scale-independent
+            const layerRect = layer.getBoundingClientRect(); // Visual pixel size
 
-        // Wrapper visual position relative to layer
-        const elLeft = parseFloat(wrapper.style.left);
-        const elTop = parseFloat(wrapper.style.top);
+            // Wrapper visual position relative to layer
+            const elLeft = parseFloat(wrapper.style.left);
+            const elTop = parseFloat(wrapper.style.top);
 
-        // Position Input Correction
-        const xPercent = (elLeft + 4) / layerRect.width;
-        const yPercent = (elTop + 4) / layerRect.height;
+            // Position Input Correction
+            const xPercent = (elLeft + 4) / layerRect.width;
+            const yPercent = (elTop + 4) / layerRect.height;
 
-        // PDF Coordinates
-        const pdfX = xPercent * width;
-        const pdfY = height - (yPercent * height) - (14);
+            // PDF Coordinates
+            const pdfX = xPercent * width;
+            const pdfY = height - (yPercent * height) - (14);
 
-        // Font & Size Logic
-        const fontType = el.dataset.font;
-        const usedFont = fontType === 'signature' ? signatureFont : helveticaFont;
-        // Signature needs be larger to match visual 24px vs 16px
-        // Scale Factor: 24/16 = 1.5. 
-        const fontSize = (fontType === 'signature' ? 24 : 16) / state.scale;
+            // Font & Size Logic
+            const fontType = el.dataset.font;
+            const usedFont = fontType === 'signature' ? signatureFont : helveticaFont;
+            // Signature needs be larger to match visual 24px vs 16px
+            // Scale Factor: 24/16 = 1.5. 
+            const fontSize = (fontType === 'signature' ? 24 : 16) / state.scale;
 
-        // Color Logic
-        const hex = el.dataset.color || '#000000';
-        const r = parseInt(hex.slice(1, 3), 16) / 255;
-        const g = parseInt(hex.slice(3, 5), 16) / 255;
-        const b = parseInt(hex.slice(5, 7), 16) / 255;
+            // Color Logic
+            const hex = el.dataset.color || '#000000';
+            const r = parseInt(hex.slice(1, 3), 16) / 255;
+            const g = parseInt(hex.slice(3, 5), 16) / 255;
+            const b = parseInt(hex.slice(5, 7), 16) / 255;
 
-        page.drawText(text, {
-            x: pdfX,
-            y: pdfY,
-            size: fontSize,
-            font: usedFont,
-            color: rgb(r, g, b),
+            page.drawText(text, {
+                x: pdfX,
+                y: pdfY,
+                size: fontSize,
+                font: usedFont,
+                color: rgb(r, g, b),
+            });
         });
-    });
 
-    const pdfBytes = await pdfDoc.save();
-    const blob = new Blob([pdfBytes], { type: 'application/pdf' });
-    // Create download link
-    const link = document.createElement('a');
-    link.href = URL.createObjectURL(blob);
+        const pdfBytes = await pdfDoc.save();
+        const blob = new Blob([pdfBytes], { type: 'application/pdf' });
+        
+        // Create download link
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
 
-    // Ensure filename has .pdf extension
-    let filename = state.file.name;
-    if (!filename.toLowerCase().endsWith('.pdf')) {
-        filename += '.pdf';
+        // Ensure filename has .pdf extension
+        let filename = state.file.name;
+        if (!filename.toLowerCase().endsWith('.pdf')) {
+            filename += '.pdf';
+        }
+        link.download = `rellenado_${filename}`;
+
+        // Append to body to ensure 'download' attribute works correctly in all browsers
+        document.body.appendChild(link);
+        link.click();
+
+        // Cleanup
+        document.body.removeChild(link);
+        URL.revokeObjectURL(link.href);
+        
+        console.log('PDF descargado exitosamente');
+    } catch (error) {
+        console.error('Error al descargar PDF:', error);
+        alert('Hubo un error al generar el PDF. Por favor, intenta nuevamente.');
     }
-    link.download = `rellenado_${filename}`;
-
-    // Append to body to ensure 'download' attribute works correctly in all browsers
-    document.body.appendChild(link);
-    link.click();
-
-    // Cleanup
-    document.body.removeChild(link);
-    URL.revokeObjectURL(link.href);
 }
 
 function resetApp() {

@@ -11,16 +11,17 @@
 ## ✨ Características
 
 - 🎨 **Múltiples estilos de escritura** - 4 fuentes distintas para diferentes usos
-- 🖊️ **Lápiz Negro** - Roboto (profesional y limpio)
-- 📝 **Lápiz Azul** - Caveat (notas manuscritas)
-- 🖍️ **Lápiz Rojo** - Patrick Hand (correcciones y marcas)
-- ✒️ **Firma** - Dancing Script (elegante y cursiva)
+  - 🖊️ **Lápiz Negro** - Roboto (profesional y limpio)
+  - 📝 **Lápiz Azul** - Caveat (notas manuscritas)
+  - 🖍️ **Lápiz Rojo** - Patrick Hand (correcciones y marcas)
+  - ✒️ **Firma** - Dancing Script (elegante y cursiva)
 - 🔒 **100% Privado** - Todo se procesa en tu navegador, sin servidores
 - 📱 **PWA** - Instálalo como app en tu dispositivo
 - 🚀 **Sin instalación** - Funciona directamente desde el navegador
 - 💾 **Offline Ready** - Funciona sin conexión a internet
 - 🎯 **Drag & Drop** - Arrastra y suelta tus PDFs
 - ⚡ **Súper rápido** - Procesamiento instantáneo
+- 📥 **Descarga inmediata** - Obtén tu PDF editado al instante
 
 ---
 
@@ -110,6 +111,22 @@ Abre tu navegador en `http://localhost:8080`
 - ✅ Todo el procesamiento es local
 - ✅ Funciona offline
 - ✅ Open Source
+
+---
+
+## 📝 Changelog
+
+### v1.1.0 (2026-01-07)
+- 🐛 **Fix**: Corregido error en la descarga de PDFs editados
+- ✨ **Mejora**: Agregado manejo de errores con try-catch en función de descarga
+- ✨ **Mejora**: Mensajes de consola para debugging
+- 📚 **Docs**: Actualizada documentación del proyecto
+
+### v1.0.0 (2026-01-06)
+- 🎉 Lanzamiento inicial
+- ✨ Soporte para 4 tipos de fuentes diferentes
+- ✨ Editor visual de PDFs
+- ✨ PWA con soporte offline
 
 ---
 
