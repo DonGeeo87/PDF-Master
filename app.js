@@ -3,11 +3,21 @@
 const state = {
     file: null,
     pdfDoc: null,
-    scale: 1.5,
+    scale: getInitialScale(), // Responsive initial scale
+    minScale: 0.5,
+    maxScale: 3.0,
     currentColor: '#000000',
     currentFont: 'standard', // 'standard' or 'signature'
     inputs: [],
 };
+
+/* Get Initial Scale Based on Viewport */
+function getInitialScale() {
+    const width = window.innerWidth;
+    if (width < 640) return 0.8;  // Mobile
+    if (width < 1024) return 1.0; // Tablet
+    return 1.5;                    // Desktop
+}
 
 /* DOM Elements */
 const elements = {
@@ -56,6 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Actions
     elements.resetBtn.addEventListener('click', resetApp);
     elements.downloadBtn.addEventListener('click', handleDownload);
+
+    // Zoom Controls
+    const zoomInBtn = document.getElementById('zoom-in-btn');
+    const zoomOutBtn = document.getElementById('zoom-out-btn');
+    if (zoomInBtn) zoomInBtn.addEventListener('click', () => adjustZoom(0.2));
+    if (zoomOutBtn) zoomOutBtn.addEventListener('click', () => adjustZoom(-0.2));
 
     // Color Selection
     elements.colorBtns.forEach(btn => {
@@ -143,6 +159,9 @@ async function loadPDF(file) {
 
         await renderPages();
 
+        // Setup pinch-to-zoom for mobile
+        setupPinchZoom();
+
         // Show Toast Onboarding
         showToast();
 
@@ -164,6 +183,55 @@ function showToast() {
         elements.toast.classList.add('hidden');
     }, 4000);
 }
+
+/* Zoom Controls */
+function adjustZoom(delta) {
+    const newScale = Math.max(state.minScale, Math.min(state.maxScale, state.scale + delta));
+    if (newScale !== state.scale) {
+        state.scale = newScale;
+        renderPages();
+    }
+}
+
+/* Pinch to Zoom for Mobile */
+function setupPinchZoom() {
+    let initialDistance = 0;
+    let initialScale = state.scale;
+
+    elements.pdfContainer.addEventListener('touchstart', (e) => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const touch1 = e.touches[0];
+            const touch2 = e.touches[1];
+            initialDistance = Math.hypot(
+                touch2.clientX - touch1.clientX,
+                touch2.clientY - touch1.clientY
+            );
+            initialScale = state.scale;
+        }
+    }, { passive: false });
+
+    elements.pdfContainer.addEventListener('touchmove', (e) => {
+        if (e.touches.length === 2) {
+            e.preventDefault();
+            const touch1 = e.touches[0];
+            const touch2 = e.touches[1];
+            const currentDistance = Math.hypot(
+                touch2.clientX - touch1.clientX,
+                touch2.clientY - touch1.clientY
+            );
+
+            const scale = (currentDistance / initialDistance) * initialScale;
+            const newScale = Math.max(state.minScale, Math.min(state.maxScale, scale));
+
+            if (Math.abs(newScale - state.scale) > 0.05) {
+                state.scale = newScale;
+                renderPages();
+            }
+        }
+    }, { passive: false });
+}
+
 
 /* API: Render Pages */
 async function renderPages() {

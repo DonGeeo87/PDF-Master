@@ -299,6 +299,39 @@ body {
     transform: scale(1.15);
 }
 
+/* Zoom Controls */
+.zoom-controls {
+    display: flex;
+    gap: 0.5rem;
+    align-items: center;
+}
+
+.btn-zoom {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    font-size: 1.25rem;
+    font-weight: bold;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-zoom:hover {
+    background-color: rgba(255, 255, 255, 0.3);
+    transform: scale(1.1);
+}
+
+.btn-zoom:active {
+    transform: scale(0.95);
+}
+
+
 /* Header Actions */
 .header-actions {
     display: flex;
@@ -519,38 +552,38 @@ button {
 
 /* Mobile: Pantallas pequeñas (< 640px) */
 @media (max-width: 640px) {
-    
+
     /* Header más compacto */
     .app-header {
         padding: 0.75rem 1rem;
     }
-    
+
     .app-logo {
         height: 32px;
     }
-    
+
     .logo-text {
         font-size: 1rem;
     }
-    
+
     /* Upload zone más compacto */
     .upload-zone {
         padding: 2rem 1.5rem;
         width: 95%;
     }
-    
+
     .upload-zone .icon {
         font-size: 2.5rem;
     }
-    
+
     .upload-zone h1 {
         font-size: 1.25rem;
     }
-    
+
     .upload-zone p {
         font-size: 0.875rem;
     }
-    
+
     /* Controles flotantes: Layout vertical compacto */
     .floating-controls {
         bottom: 1rem;
@@ -563,33 +596,33 @@ button {
         border-radius: var(--radius-lg);
         max-width: none;
     }
-    
+
     .floating-controls.hidden {
         transform: translateY(150%);
     }
-    
+
     /* Herramientas en una fila */
     .tool-group {
         justify-content: center;
         width: 100%;
     }
-    
+
     /* Botones de color más grandes para touch */
     .btn-color {
         width: 32px;
         height: 32px;
     }
-    
+
     .btn-tool {
         font-size: 1.25rem;
         padding: 0.5rem;
     }
-    
+
     /* Separadores horizontales en móvil */
     .separator {
         display: none;
     }
-    
+
     /* Nombre de archivo más pequeño */
     .file-info {
         font-size: 0.75rem;
@@ -599,16 +632,16 @@ button {
         text-overflow: ellipsis;
         white-space: nowrap;
     }
-    
+
     /* Botones de acción en fila */
-    .floating-controls > .btn-action,
-    .floating-controls > .btn-secondary {
+    .floating-controls>.btn-action,
+    .floating-controls>.btn-secondary {
         flex: 1;
         text-align: center;
         font-size: 0.875rem;
         padding: 0.75rem 1rem;
     }
-    
+
     /* Toast más pequeño */
     .toast {
         top: 70px;
@@ -616,24 +649,24 @@ button {
         padding: 0.5rem 1rem;
         max-width: 90%;
     }
-    
+
     /* Footer más compacto */
     .app-footer {
         padding: 0.75rem;
         font-size: 0.75rem;
     }
-    
+
     /* Editor view padding reducido */
     #editor-view {
         padding: 1rem 0 10rem 0;
     }
-    
+
     /* PDF wrapper con menos gap */
     .pdf-wrapper {
         gap: 15px;
         padding: 0 0.5rem;
     }
-    
+
     /* Botones de delete más grandes para touch */
     .btn-delete {
         width: 28px;
@@ -646,12 +679,12 @@ button {
 
 /* Tablet: Pantallas medianas (641px - 1024px) */
 @media (min-width: 641px) and (max-width: 1024px) {
-    
+
     .floating-controls {
         flex-wrap: wrap;
         max-width: 90%;
     }
-    
+
     .file-info {
         font-size: 0.875rem;
     }
@@ -659,14 +692,14 @@ button {
 
 /* Landscape móvil */
 @media (max-width: 896px) and (orientation: landscape) {
-    
+
     .floating-controls {
         bottom: 0.5rem;
         padding: 0.5rem 0.75rem;
         flex-direction: row;
         flex-wrap: wrap;
     }
-    
+
     #editor-view {
         padding: 0.5rem 0 5rem 0;
     }
@@ -674,14 +707,14 @@ button {
 
 /* Touch devices: Botones más grandes */
 @media (hover: none) and (pointer: coarse) {
-    
+
     .btn-primary,
     .btn-action,
     .btn-secondary {
         min-height: 44px;
         /* iOS touch target recommendation */
     }
-    
+
     .btn-color {
         min-width: 32px;
         min-height: 32px;
