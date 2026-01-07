@@ -1,4 +1,4 @@
-const CACHE_NAME = 'rellenapdf-v4';
+const CACHE_NAME = 'pdf-master-v1.1.0';
 const ASSETS = [
     './',
     './index.html',
