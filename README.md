@@ -153,7 +153,7 @@ Este proyecto está bajo la Licencia MIT. Ver el archivo [LICENSE](LICENSE) para
 **Giorgio Interdonato**
 
 - GitHub: [@DonGeeo87](https://github.com/DonGeeo87)
-- Web: [Emprendedores por @DonGeeo87](https://www.youtube.com/@DonGeeo87)
+
 
 ---
 
